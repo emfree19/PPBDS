@@ -2052,7 +2052,7 @@ rnorm(1000) %>% hist()
 `rnorm()` has three arguments: `n`, `mean`, and `sd`. `n` corresponds to the number of observations, `mean` corresponds to the average as a whole, and `sd` corresponds to the size of the standard deviation from the mean. We will go further in depth in future chapters on what the statistical mechanics are behind these distributions, but for now, let's focus on creating a Normal distribution.
 
 ```{marginfigure, echo=TRUE}
-Insert Normal formula here.
+# Insert Normal formula here.
 ```
 
 If we run the following:
