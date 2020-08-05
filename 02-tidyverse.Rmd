@@ -1928,6 +1928,13 @@ You can also view examples of both `pivot_longer()` and `pivot_wider()` on the [
 
 Here are some commands which will prove useful for the rest of the book.
 
+### NA Values 
+
+
+###`ifelse()`
+
+### `skim()`
+
 
 ## Normal distribution
 
