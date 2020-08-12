@@ -1831,10 +1831,44 @@ Here are some commands which will prove useful for the rest of the book.
 
 ### `skim()`
 
+The `skim()` is a useful summary function that offers an overview of a dataframe. It offers users the abilities to see potential trends and outliers for each of the variables. The function creates a report of the dataframe according to variable type. First, load (and install) the `skimr` package in which `skim()` resides. We'll run skim on the `flights` dataset. 
 
-## Normal distribution
+```{r}
+skim(flights)
+```
+
+Take a quick look at the section containing numeric variables. This is of particular interest because the rightmost column offers insight into the potential distribution of the data, something that will be discussed in later depth below. 
 
 <!-- DK: Maybe we put this down below, after we introduce rnorm()? -->
+
+## Distribution 
+
+What is a distribution? The distribution of a variable shows how frequently different values of a variable occur. Looking at the visualization of a distribution can show where the values are centered, show how the values vary, and give some information about where a typical value might fall. It can also alert you to the presence of outliers. 
+
+### `runif()`
+
+Consider Uniform distribution. This is the case in which every outcome has the same chance of occurring. A Uniform distribution you might encounter everyday is rolling a fair dice. For example, you are as likely to roll a 2 as you are to roll a 6. In R, the function `runif()` (read as "r-unif") corresponds to a Uniform contribution. In other words, this function generates random values (within a specified range).
+
+The `runif()` function has three arguments: `n`, `min`, and `max`. Note that in R, `runif()` returns a continuous uniform distribution, not a discrete one. This means that if we tried to simulate our die-rolling example, we would get decimal values.
+
+Let's press on with our die-rolling example now that we have cautioned you about the difference between discrete and continuous uniform distributions. There are three arguments to `runif()`: `n`, `min`, and `max`. `n` is the number of observations, or `n = 1` since we are rolling the die once. The default value for `min` is `0` and the default value of `max` is 1. In our die-rolling example, these two values would be `min = 1` and `max = 6`, respectively. Let's plug these arguments into the function and see what we get.
+
+```{r}
+runif(n = 1,min = 1,max = 6)
+```
+Nice! We just made our first uniform distribution. Again, note that the output contains decimal numbers.
+
+### `rbinom()`
+
+Now consider Binomial distribution, the case in which the probability of some boolean variable (for instance success or failure) is calculated for repeated, independent trials. One common example would be the probability of flipping a coin and landing on heads. In R, the function `rbinom()` simulates such a distribution. This function takes three arguments, `n`, `size`, and `prob`. `n` is the number of observations, the `size` is the number of trials, and `prob` is the probability of success on each trial. Suppose we wanted to flip a fair coin one time, and let landing on hands represent success. Let `n=1` and `size = 1`, as we only want to flip the coin once. Then, since the coin is a fair coin, let `prob = 0.5`.
+
+```{r}
+rbinom(n =1 , size = 1, prob = 0.5)
+```
+
+
+
+### Normal distribution
 
 Let's next discuss one particular kind of distribution: *normal distributions*. Such bell-shaped distributions are defined by two values: (1) the *mean* $\mu$ ("mu") which locates the center of the distribution and (2) the *standard deviation* $\sigma$ ("sigma") which determines the variation of the distribution. In the figure below, we plot three normal distributions where:
 
@@ -1936,13 +1970,7 @@ ggplot(data = tibble(x = c(-4, 4)), aes(x)) +
 ```
 
 
-### Probability Functions
-
-<!-- EC: Is using this moderndive paragraph enough background for distributions? DK: Yes. Vivian goes into the deep detail. This is enough. IN fact, we could even cut it.-->
-
-What is a distribution? The distribution of a variable shows how frequently different values of a variable occur. Looking at the visualization of a distribution can show where the values are centered, show how the values vary, and give some information about where a typical value might fall. It can also alert you to the presence of outliers. If you feel like we have encountered distributions before, then you are absolutely correct. Recall that we can visualize the distribution of a numerical variable using binning in a histogram and that we can visualize the distribution of a categorical variable using a barplot.
-
-<!-- EC: What formulas do we want? I'm guessing not something as complex as a probability density function, will explaining the elements of a normal/Uniform dist be enough? DK: No formulas in this chapter are needed, although if you wanted them in a side note you could. We only need to show histograms, as you have done, and discuss sensible scenarios for the use of each function. -->
+### `rnorm()`
 
 The function `rnorm()` can be read as "r-norm". It corresponds to a Normal distribution, whose histograms look roughly like the following:
 
@@ -1997,20 +2025,6 @@ ggplot(distrib_2, aes(x = value)) +
 
 Now it's looking a lot more similar! As you just discovered, the more observations a normal distribution has, the closer it looks to a symmetrical bell curve.
 
-The function `runif()` can be read as "r-unif". It corresponds to a Uniform distribution, in which every outcome has the same chance of occurring. A Uniform distribution you might encounter everyday is rolling a fair dice. You are as likely to roll a 2 as you are to roll a 6.
-
-```{marginfigure, echo=TRUE}
-Insert uniform formula here.
-```
-
-The `runif()` function allows us to create our own uniform distributions with the specifications `n`, `min`, and `max`. Note that in R, `runif()` returns a continuous uniform distribution, not a discrete one. This means that if we tried to simulate our die-rolling example, we would get decimal values.
-
-Let's press on with our die-rolling example now that we have cautioned you about the difference between discrete and continuous uniform distributions. There are three arguments to `runif()`: `n`, `min`, and `max`. `n` is the number of observations, or `n = 1` since we are rolling the die once. The default value for `min` is `0` and the default value of `max` is 1. In our die-rolling example, these two values would be `min = 1` and `max = 6`, respectively. Let's plug these arguments into the function and see what we get.
-
-```{r}
-runif(1,1,6)
-```
-Nice! We just made our first uniform distribution. Again, note that the output contains decimal numbers.
 
 
 <!-- DK: We want to show and explain rnorm(), runif() and rbinom(), with a clear explanation of coin-tossing as an example. Like how many heads might appear of you flip a coint with p = 0.6 20 times. (Use that exact example.) -->
