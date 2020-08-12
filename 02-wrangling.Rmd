@@ -1831,7 +1831,7 @@ Here are some commands which will prove useful for the rest of the book.
 
 ### `skim()`
 
-The `skim()` is a useful summary function that offers an overview of a dataframe. It offers users the abilities to see potential trends and outliers for each of the variables. The function creates a report of the dataframe according to variable type. First, load (and install) the `skimr` package in which `skim()` resides. We'll run skim on the `flights` dataset. 
+The `skim()`  function is a useful summary function that offers an overview of a dataframe. It offers users the abilities to see potential trends and outliers for each of the variables. The function creates a report of the dataframe according to variable type. First, load (and install) the `skimr` package in which `skim()` resides. We'll run skim on the `flights` dataset. 
 
 ```{r}
 skim(flights)
