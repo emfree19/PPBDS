@@ -9,6 +9,11 @@ output_yaml:
 library(tidyverse)
 ```
 
+<!-- Next Meeting: -->
+
+<!-- 1) Deal with references. Can't have a References section. Figure out the right bibtex entry for reference you (!) want to keep. Place them in bib/references.bib. Call them with @entry somewhere in your chapter. -->
+
+
 <!-- Outline: -->
 
 <!-- Fix the tutorial. Delete the True Agains. Give enough blank lines for what you expect. -->
@@ -730,6 +735,7 @@ First we should specifically define what we want to know. We probably want to un
 We have spoken about ideal Preceptor Tables (no missing data), actual Preceptor Tables (question marks representing the values we don't know), but there is one more type of Preceptor Table. In the real world, a Preceptor Table has an infinite number of rows, and therefore an infinite amount of missing data. We call this type of Preceptor Table an infinite Preceptor Table. Such a reality is unworkable, so we make assumptions to reduce the true problem to something more manageable.
 
 `r margin_note("Why should we care about Yao's (or anyone's) attitude years from now? We need to consider why we are doing the experiment in the first place. Why would we care about Yao's attitude towards immigrants in the first place? There might be many answers to this question, like wanting to understand how he might vote or treat other people. That would mean we care about Yao's attitude in the future, not just at the time of being surveyed.")`
+
 Let's start by looking at what kinds of missing data make up the infinite Preceptor Table. For example, say we only care about the causal effect of this experiment on Yao. Do we only care about his attitude right after the experiment? No! We also care about Yao's potential outcomes one year from now, two years from now, and so on.
 
 So our full Preceptor Table includes people we know (Yao) and people we don't (for example, Eliot), both now and in the future:
@@ -1647,17 +1653,16 @@ The causal effect of a treatment on a single unit at a point in time is the diff
 
 `r tufte::quote_footer('--- Don Rubin')`
 
-## References
+<!-- ## References -->
 
-<!-- AR: Need to integrate this with the rest of the book -->
 
-Barfort, S., Klemmensen, R., & Larsen, E. (2020). Longevity returns to political office. Political Science Research and Methods, 1-7. doi:10.1017/psrm.2019.63
+<!-- Barfort, S., Klemmensen, R., & Larsen, E. (2020). Longevity returns to political office. Political Science Research and Methods, 1-7. doi:10.1017/psrm.2019.63 -->
 
-Cox, D. R. (1958). *Planning of Experiments.* Wiley.
+<!-- Cox, D. R. (1958). *Planning of Experiments.* Wiley. -->
 
-Holland, Paul W. (1986). "Statistics and Causal Inference." *J. Amer. Statist. Assoc.* 81 (396): 945–960. doi:10.1080/01621459.1986.10478354.
+<!-- Holland, Paul W. (1986). "Statistics and Causal Inference." *J. Amer. Statist. Assoc.* 81 (396): 945–960. doi:10.1080/01621459.1986.10478354. -->
 
-Mallinckrodt, Craig; Molenberghs, Geert & Rathmann, Suchitrita (2017) Choosing estimands in clinical trials with missing data. Pharmaceutical Statistics, 16(1), p. 29-36.
+<!-- Mallinckrodt, Craig; Molenberghs, Geert & Rathmann, Suchitrita (2017) Choosing estimands in clinical trials with missing data. Pharmaceutical Statistics, 16(1), p. 29-36. -->
 
-Rubin (2011, page 288), Discussion of “Towards more accessible conceptions of statistical inferences” by C. J. Wild, M. Pfannkuch, M. Regan and N. J. Horton, Journal of the Royal Statistical Society. Series A (Statistics in Society), Vol. 174, No. 2 (APRIL 2011), pp. 247-295.
+<!-- Rubin (2011, page 288), Discussion of “Towards more accessible conceptions of statistical inferences” by C. J. Wild, M. Pfannkuch, M. Regan and N. J. Horton, Journal of the Royal Statistical Society. Series A (Statistics in Society), Vol. 174, No. 2 (APRIL 2011), pp. 247-295. -->
 
