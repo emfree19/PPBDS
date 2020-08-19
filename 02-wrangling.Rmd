@@ -76,27 +76,28 @@ library(knitr)
 ```
 
 ```{r, message=FALSE}
+library(tidyverse)
+library(PPBDS.data)
+library(lubridate)
+library(skimr)
 library(gapminder)
 library(nycflights13)
 library(fivethirtyeight)
-library(PPBDS.data)
-library(tidyverse)
-library(lubridate)
-library(skimr)
 ```
 
-The **tidyverse** package will be used in every chapter. **nycflights** includes data associated with flights out of New York City's three major airports. **gapminder** has data for countries across decades. **fivethirtyeight** cleans up data from the [FiveThirtyEight](https://fivethirtyeight.com/) team.  **PPBDS.data** includes, as you might guess, data organized for use with this textbook. **lubridate** is a package for working with dates and times.
+The **tidyverse** package will be used in every chapter. **PPBDS.data** is the data package created specifically for this course. **lubridate** is a package for working with dates and times. **skimr** contains functions that are useful for providing summary statistics. **nycflights** includes data associated with flights out of New York City's three major airports. **gapminder** has data for countries across decades. **fivethirtyeight** cleans up data from the [FiveThirtyEight](https://fivethirtyeight.com/) team.  **PPBDS.data** includes, as you might guess, data organized for use with this textbook.
 
 ## Data Gathering
 
-Recall the `read_csv()` function from chapter 1 of this textbook. In a previous exercise, we ran the following code chunk:
+Recall the `read_csv()` function introduced in chapter 1 of this textbook. In a previous exercise, we ran the following code chunk:
 
 ```{r}
 dem_score <- read_csv(file = "https://moderndive.com/data/dem_score.csv")
 ```
+
 The result of this code chunk is pretty tame. It tells us that each comma from the .csv file corresponds to a column, and the column names are taken from the first line of the file. Then, the function "guesses" an appropriate data type for each of the columns it creates. Sometimes .csv files are a lot dirtier and require significant wrangling before you can explore the data and create usable graphics. 
 
-Let's try to run `read_csv()` on another dataset. This is a link to a file containing the faculty's gender data across departments at Harvard University.
+Let's try to run `read_csv()` on another dataset. This is a link to a file containing the faculty's gender data across departments at Harvard University. Note, the file argument of the `read_csv()` function can take the link to a dataset in a number of forms. In the previous example and the one below, the file argument takes a url. Other formats that this argument could take are full or partial file paths for .csv files saved locally on your computer. 
 
 ```{r}
 url <- "https://raw.githubusercontent.com/davidkane9/PPBDS/master/02-wrangling/data/harvard-faculty-gender-final.csv"
@@ -104,11 +105,12 @@ gender_data <- read_csv(file = url)
 ```
 
 Now, call `gender_data`.
+
 ```{r}
 gender_data
 ```
 
-As you can see, the second row was likely meant to contain the column names. You can run `?read_csv()` in your console to see the additional arguments that the `read_csv()` function may contain to make the new dataframe easier to work with.
+As you can see, the second row was likely meant to contain the column names. You can run `?read_csv()` in your console to see the additional arguments that the `read_csv()` function may contain to make the new dataframe easier to work with. The skip argument allows you to skip rows of the dataset. 
 
 ```{r}
 gender_data <- read_csv(file = url, skip = 1)
@@ -119,7 +121,6 @@ gender_data
 ```{r echo=FALSE, fig.margin=TRUE}
 knitr::include_graphics("https://imgs.xkcd.com/comics/scientist_tech_help.png")
 ```
-
 
 Now suppose we want to change the data type of one of more of the columns. The `col_type` argument allows us to do this. Without the `col_type` argument, the `division` column is read in as a character column. Instead, we want it to be read in as a factor.  
 
@@ -138,7 +139,6 @@ glimpse(gender_data)
 
 gender_data$division
 ```
-
 Run the `summary()` function on the `gender_data` dataframe.
 ```{r}
 summary(gender_data)
@@ -161,6 +161,8 @@ gender_data <- gender_data %>%
 tail(gender_data)
 ```
 
+### HTML
+
 The data we need to answer a question is not always in a spreadsheet ready for us to read. For example, the US murders dataset we used in the R Basics chapter originally comes from [this Wikipedia page](https://en.wikipedia.org/w/index.php?title=Gun_violence_in_the_United_States_by_state): 
 
 ```{r}
@@ -182,8 +184,6 @@ Web scraping, or web harvesting, is the term we use to describe the process of e
 ```{r, echo=FALSE}
 knitr::include_graphics("02-wrangling/images/html-code.png")
 ```
-
-### HTML
 
 Because this code is accessible, we can download the HTML file, import it into R, and then write programs to extract the information we need from the page. However, once we look at HTML code, this might seem like a daunting task. But we will show you some convenient tools to facilitate the process. To get an idea of how it works, here are a few lines of code from the Wikipedia page that provides the US murders data:
 
@@ -344,11 +344,9 @@ But real life will be much nastier. You will bring data into R from the outside 
 
 Here we discuss common remedial tasks for cleaning and transforming character data, also known as "strings". A data frame or tibble will consist of one or more *atomic vectors* of a certain class. This lesson deals with things you can do with vectors of class `character`.
 
-Load the `tidyverse`, which includes `stringr`. The functions included in `stringr` begin with `str_`.
+At the beginning of the chapter, we loaded the **tidyverse**, which includes `stringr`. This package allows users to manipulate strings with its functions that being with `str_`.
 
-### Regex-free string manipulation with stringr and tidyr
-
-Basic string manipulation tasks:
+There are some basic string manipulation tasks:
 
 * Study a single character vector
   - How long are the strings?
@@ -363,7 +361,7 @@ Basic string manipulation tasks:
 
 *`fruit`, `words`, and `sentences` are character vectors that ship with stringr for practicing.*
 
-### Detect or filter on a target string
+### Studying a single character vector
 
 Determine presence/absence of a literal string with `str_detect()`. Spoiler: later we see `str_detect()` also detects regular expressions.
 
@@ -379,8 +377,6 @@ What's the easiest way to get the actual fruits that match? Use `str_subset()` t
 (my_fruit <- str_subset(fruit, pattern = "fruit"))
 ```
 
-### View a specific string
-
 Use `stringr::str_view()` to create a window in your viewer that highlights a specified pattern for any and all instances within the list. Below we look at a subset of fruit and highlight the pattern "berry" within items in that list. 
 
 ```{r}
@@ -393,7 +389,7 @@ This can be helpful when you want to check that you are highlighting the correct
 str_view(fruit[1:5], pattern = "^a.*o")
 ```
 
-### String splitting by delimiter
+### Operating on a single character vector
 
 Use `stringr::str_split()` to split strings on a delimiter. Some of our fruits are compound words, like "grapefruit", but some have two words, like "ugli fruit". Here we split on a single space `" "`, but show use of a regular expression later. 
 
@@ -416,8 +412,6 @@ my_fruit_df <- tibble(my_fruit)
 my_fruit_df %>% 
   separate(my_fruit, into = c("pre", "post"), sep = " ")
 ```
-
-### Substring extraction (and replacement) by position
 
 Count characters in your strings with `str_length()`. Note this is different from the length of the character vector itself.
 
@@ -449,8 +443,6 @@ str_sub(x, 1, 3) <- "AAA"
 x
 ```
 
-### Collapse a vector
-
 You can collapse a character vector of length `n > 1` to a single string with `str_c()`, which also has other uses (see the [next section](#catenate-vectors)).
 
 
@@ -458,33 +450,6 @@ You can collapse a character vector of length `n > 1` to a single string with `s
 head(fruit) %>% 
   str_c(collapse = ", ")
 ```
-
-### Create a character vector by catenating multiple vectors {#catenate-vectors}
-
-If you have two or more character vectors of the same length, you can glue them together element-wise, to get a new vector of that length. Here are some ... awful smoothie flavors?
-
-```{r}
-str_c(fruit[1:4], fruit[5:8], sep = " & ")
-```
-
-Element-wise catenation can be combined with collapsing.
-
-```{r}
-str_c(fruit[1:4], fruit[5:8], sep = " & ", collapse = ", ")
-```
-
-If the to-be-combined vectors are variables in a data frame, you can use `tidyr::unite()` to make a single new variable from them.
-
-```{r}
-fruit_df <- tibble(
-  fruit1 = fruit[1:4],
-  fruit2 = fruit[5:8]
-)
-fruit_df %>% 
-  unite("flavor_combo", fruit1, fruit2, sep = " & ")
-```
-
-### Substring replacement 
 
 You can replace a pattern with `str_replace()`. Here we use an explicit string-to-replace, but later we revisit with a regular expression.
 
@@ -510,6 +475,31 @@ tibble(melons) %>%
 
 And that concludes our treatment of regex-free manipulations of character data!
 
+### Operating on two or more character vectors 
+
+If you have two or more character vectors of the same length, you can glue them together element-wise, to get a new vector of that length. Here are some ... awful smoothie flavors?
+
+```{r}
+str_c(fruit[1:4], fruit[5:8], sep = " & ")
+```
+
+Element-wise catenation can be combined with collapsing.
+
+```{r}
+str_c(fruit[1:4], fruit[5:8], sep = " & ", collapse = ", ")
+```
+
+If the to-be-combined vectors are variables in a data frame, you can use `tidyr::unite()` to make a single new variable from them.
+
+```{r}
+fruit_df <- tibble(
+  fruit1 = fruit[1:4],
+  fruit2 = fruit[5:8]
+)
+fruit_df %>% 
+  unite("flavor_combo", fruit1, fruit2, sep = " & ")
+```
+
 ### Regular expressions with stringr
 
 ```{r echo = FALSE, fig.cap = "From [\\@ThePracticalDev](https://twitter.com/ThePracticalDev/status/774309983467016193)", out.width = "50%"}
@@ -517,15 +507,13 @@ knitr::include_graphics("02-wrangling/images/regexp.jpg")
 
 ```
 
+Frequently your string tasks cannot be expressed in terms of a fixed string, but can be described in terms of a **pattern**. Regular expressions, aka "regexes", are the standard way to specify these patterns. In regexes, specific characters and constructs take on special meaning in order to match multiple strings.
+
 The country names in the `gapminder` dataset are convenient for examples. Load it now and store the `r nlevels(gapminder::gapminder$country)` unique country names in the object `countries`.
 
 ```{r}
 countries <- levels(gapminder$country)
 ```
-
-### Characters with special meaning
-
-Frequently your string tasks cannot be expressed in terms of a fixed string, but can be described in terms of a **pattern**. Regular expressions, aka "regexes", are the standard way to specify these patterns. In regexes, specific characters and constructs take on special meaning in order to match multiple strings.
 
 The first metacharacter is the period `.`, which stands for any single character, except a newline (which by the way, is represented by `\n`). The regex `a.b` will match all countries that have an `a`, followed by any single character, followed by `b`. Yes, regexes are case sensitive, i.e. "Italy" does not match.
 
@@ -535,7 +523,7 @@ str_subset(countries, pattern = "i.a")
 
 Notice that `i.a` matches "ina", "ica", "ita", and more.
 
-**Anchors** can be included to express where the expression must occur within the string. The `^` indicates the beginning of string and `$` indicates the end.
+Anchors can be included to express where the expression must occur within the string. The `^` indicates the beginning of string and `$` indicates the end.
 
 Note how the regex `i.a$` matches many fewer countries than `i.a` alone. Likewise, more elements of `my_fruit` match `d` than `^d`, which requires "d" at string start.
 
@@ -545,15 +533,13 @@ str_subset(my_fruit, pattern = "d")
 str_subset(my_fruit, pattern = "^d")
 ```
 
-The metacharacter `\b` indicates a **word boundary** and `\B` indicates NOT a word boundary. This is our first encounter with something called "escaping" and right now I just want you at accept that we need to prepend a second backslash to use these sequences in regexes in R. We'll come back to this tedious point later.
+The metacharacter `\b` indicates a word boundary and `\B` indicates NOT a word boundary. This is our first encounter with something called "escaping" and right now I just want you at accept that we need to prepend a second backslash to use these sequences in regexes in R. We'll come back to this tedious point later.
 
 ```{r}
 str_subset(fruit, pattern = "melon")
 str_subset(fruit, pattern = "\\bmelon")
 str_subset(fruit, pattern = "\\Bmelon")
 ```
-
-### Character classes
 
 Characters can be specified via classes. You can make them explicitly "by hand" or use some pre-existing ones.  Character classes are usually given inside square brackets, `[]` but a few come up so often that we have a metacharacter for them, such as `\d` for a single digit.
 
@@ -626,60 +612,8 @@ list(match = intersect(matches, str_subset(fruit, pattern = "le")),
      no_match = setdiff(matches, str_subset(fruit, pattern = "le")))
 ```
 
-### Escaping
-
-You've probably caught on by now that there are certain characters with special meaning in regexes, including `$ * + . ? [ ] ^ { } | ( ) \`.
-
-What if you really need the plus sign to be a literal plus sign and not a regex quantifier? You will need to *escape* it by prepending a backslash. But wait ... there's more! Before a regex is interpreted as a regular expression, it is also interpreted by R as a string. And backslash is used to escape there as well. So, in the end, you need to preprend two backslashes in order to match a literal plus sign in a regex.
-
-This will be more clear with examples!
-
-#### Escapes in plain old strings
-
-Here is routine, non-regex use of backslash `\` escapes in plain vanilla R strings. We intentionally use `cat()` instead of `print()` here.
-
-* To escape quotes inside quotes:
-    ```{r}
-    cat("Do you use \"airquotes\" much?")
-    ```
-    Sidebar: eliminating the need for these escapes is exactly why people use double quotes inside single quotes and *vice versa*.    
-    
-* To insert newline (`\n`) or tab (`\t`):
-    ```{r}
-    cat("before the newline\nafter the newline")
-    cat("before the tab\tafter the tab")
-    ```
-
-#### Escapes in regular expressions
-
-Examples of using escapes in regexes to match characters that would otherwise have a special interpretation.
-
-We know several `gapminder` country names contain a period. How do we isolate them? Although it's tempting, this command `str_subset(countries, pattern = ".")` won't work!
-
-```{r}
-# Cheating using a POSIX class ;)
-
-str_subset(countries, pattern = "[[:punct:]]")
-
-# Using two backslashes to escape the period
-
-str_subset(countries, pattern = "\\.")
-```
-
-A last example that matches an actual square bracket.
-
-```{r end_char_vectors}
-(x <- c("whatever", "X is distributed U[0,1]"))
-str_subset(x, pattern = "\\[")
-```
-
-### Groups and backreferences
-
-Your first use of regex is likely to be simple matching: detecting or isolating strings that match a pattern.
-
-But soon you will want to use regexes to transform the strings in character vectors. That means you need a way to address specific parts of the matching strings and to operate on them.
-
-You can use parentheses inside regexes to define *groups* and you can refer to those groups later with *backreferences*.
+### String Constant 
+<!-- EWF --> 
 
 ## Factors
 
@@ -706,7 +640,7 @@ fct_count(gapminder$continent)
 
 Just because you drop all the rows corresponding to a specific factor level, the levels of the factor itself do not change. Sometimes all these unused levels can come back to haunt you later, e.g., in figure legends.
 
-Watch what happens to the levels of `country` (= nothing) when we filter Gapminder to a handful of countries.
+Watch what happens to the levels of `country` when we filter Gapminder to a handful of countries.
 
 ```{r}
 nlevels(gapminder$country)
@@ -877,7 +811,6 @@ fct_c(df1$country, df2$country)
 ```
 
 ## Lists
-<!-- EC: Added this section from R4DS -->
 
 Lists are a type of vector that is a step up in complexity from atomic vectors, because lists can contain other lists. This makes them suitable for representing hierarchical or tree-like structures. You create a list with `list()`:
 
@@ -971,13 +904,13 @@ knitr::include_graphics("02-wrangling/images/lists-subsetting.png")
 
 The difference between `[` and `[[` is very important, but it's easy to get confused. To help you remember, let me show you an unusual pepper shaker.
 
-```{r, out.width = "25%", echo = FALSE} 
+```{r, echo = FALSE, fig.margin=TRUE} 
 knitr::include_graphics("02-wrangling/images/pepper.jpg")
 ```
 
 If this pepper shaker is your list `x`, then, `x[1]` is a pepper shaker containing a single pepper packet:
 
-```{r, out.width = "25%", echo = FALSE}
+```{r, echo = FALSE, fig.margin=TRUE}
 knitr::include_graphics("02-wrangling/images/pepper-1.jpg")
 ```
 
@@ -985,13 +918,13 @@ knitr::include_graphics("02-wrangling/images/pepper-1.jpg")
 
 `x[[1]]` is:
 
-```{r out.width = "25%", echo = FALSE} 
+```{r out.width = "25%", fig.margin=TRUE} 
 knitr::include_graphics("02-wrangling/images/pepper-2.jpg")
 ```
 
 If you wanted to get the content of the pepper package, you'd need `x[[1]][[1]]`:
 
-```{r, out.width = "25%", echo = FALSE}
+```{r, echo = FALSE, fig.margin=TRUE}
 knitr::include_graphics("02-wrangling/images/pepper-3.jpg")
 ```
 
