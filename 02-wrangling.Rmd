@@ -932,8 +932,6 @@ knitr::include_graphics("02-wrangling/images/pepper-3.jpg")
 
 We will manipulate date-times using the lubridate package, which makes it easier to work with dates and times in R. `lubridate` is not part of core tidyverse because you only need it when you're working with dates/times.
 
-### Creating date/times
-
 There are three types of date/time data that refer to an instant in time:
 
 * A `date`. Tibbles print this as `<date>`.
@@ -1125,34 +1123,10 @@ ggplot(sched_dep, aes(minute, n)) +
   geom_line()
 ```
 
-### Rounding
-
-An alternative approach to plotting individual components is to round the date to a nearby unit of time, with `floor_date()`, `round_date()`, and `ceiling_date()`. Each function takes a vector of dates to adjust and then the name of the unit round down (floor), round up (ceiling), or round to. This, for example, allows us to plot the number of flights per week:
-
-```{r}
-flights_dt %>% 
-  count(week = floor_date(dep_time, "week")) %>% 
-  ggplot(aes(week, n)) +
-    geom_line()
-```
-
-Computing the difference between a rounded and unrounded date can be particularly useful.
 
 ### Setting components
 
-You can also use each accessor function to set the components of a date/time: 
-
-```{r}
-(datetime <- ymd_hms("2016-07-08 12:34:56"))
-year(datetime) <- 2020
-datetime
-month(datetime) <- 01
-datetime
-hour(datetime) <- hour(datetime) + 1
-datetime
-```
-
-Alternatively, rather than modifying in place, you can create a new date-time with `update()`. This also allows you to set multiple values at once.
+You can create a new date-time with `update()`.
 
 ```{r}
 update(datetime, year = 2020, month = 2, mday = 2, hour = 2)
@@ -1198,9 +1172,9 @@ Bind - This is basically smashing ~~rocks~~ tibbles together. You can smash thin
 
 When row binding, you need to consider the variables in the two tibbles. Do the same variables exist in each? Are they of the same type? Different approaches for row binding have different combinations of flexibility vs rigidity around these matters.
 
-When column binding, the onus is entirely on the analyst to make sure that the rows are aligned. I would avoid column binding whenever possible. If you can introduce new variables through any other, safer means, do so! By safer, I mean: use a mechanism where the row alignment is correct **by definition**. A proper join is the gold standard. In addition to joins, functions like `dplyr::mutate()` and `tidyr::separate()` can be very useful for forcing yourself to work inside the constraint of a tibble.
+When column binding, the onus is entirely on the analyst to make sure that the rows are aligned. I would avoid column binding whenever possible. If you can introduce new variables through any other, safer means, do so! By safer, I mean: use a mechanism where the row alignment is correct by definition. A proper join is the gold standard.
 
-Join - Here you designate a variable (or a combination of variables) as a **key**. A row in one data frame gets matched with a row in another data frame because they have the same key. You can then bring information from variables in a secondary data frame into a primary data frame based on this key-based lookup. That description is incredibly oversimplified, but that's the basic idea.
+Join - Here you designate a variable (or a combination of variables) as a key. A row in one data frame gets matched with a row in another data frame because they have the same key. You can then bring information from variables in a secondary data frame into a primary data frame based on this key-based lookup. That description is incredibly oversimplified, but that's the basic idea.
 
 A variety of row- and column-wise operations fit into this framework, which implies there are many different flavors of join. The concepts and vocabulary around joins come from the database world. The relevant functions in dplyr follow this convention and all mention `join`. The most relevant base R function is `merge()`.
 
@@ -1533,7 +1507,7 @@ make_three_gt(pub_gt, super_gt, sjps_gt, super_first = FALSE)
 (ajsp <- anti_join(superheroes, publishers))
 ```
 
-We keep __only__ Hellboy now (and do not get `yr_founded`).
+We keep only Hellboy now (and do not get `yr_founded`).
 
 ```{r echo = FALSE}
 ajsp_gt <- style_table(ajsp, "anti_join(x = superheroes, y = publishers)") 
@@ -1549,7 +1523,7 @@ Now switch the arguments and compare the result.
 (ajps <- anti_join(publishers, superheroes))
 ```
 
-We keep __only__ publisher Image now (and the variables found in `x = publishers`).
+We keep only publisher Image now (and the variables found in `x = publishers`).
 
 ```{r echo = FALSE}
 ajps_gt <- style_table(ajps, "anti_join(x = publishers, y = superheroes)") 
@@ -1682,7 +1656,7 @@ Let's break down the graphic:
 1. The numerical variable `servings` would have to be mapped to the `y`-position of the bars (the height of the bars).
 1. The categorical variable `type` with three levels (beer, spirit, wine) would have to be mapped to the `fill` color of the bars.
 
-Observe, however, that `drinks_smaller` has three separate variables `beer`, `spirit`, and `wine`. In order to use the `ggplot()` function to recreate the barplot we need a *single variable* `type` with three possible values: `beer`, `spirit`, and `wine`.  We could then map this `type` variable to the `fill` aesthetic of our plot.  In other words, to recreate the barplot, our data frame would have to look like this:
+Observe, however, that `drinks_smaller` has three separate variables `beer`, `spirit`, and `wine`. In order to use the `ggplot()` function to recreate the barplot we need a single variable `type` with three possible values: `beer`, `spirit`, and `wine`.  We could then map this `type` variable to the `fill` aesthetic of our plot.  In other words, to recreate the barplot, our data frame would have to look like this:
 
 ```{r}
 drinks_smaller_tidy
@@ -1690,12 +1664,12 @@ drinks_smaller_tidy
 
 Observe that while `drinks_smaller` and `drinks_smaller_tidy` are both rectangular in shape and contain the same 12 numerical values (3 alcohol types by 4 countries), they are formatted differently. `drinks_smaller` is formatted in what's known as  ["wide"](https://en.wikipedia.org/wiki/Wide_and_narrow_data) format, whereas `drinks_smaller_tidy` is formatted in what's known as ["long/narrow"](https://en.wikipedia.org/wiki/Wide_and_narrow_data#Narrow) format.
 
-In the context of doing data science in R, long/narrow format is also known as "tidy" format. In order to use the **ggplot2** and **dplyr** packages for data visualization and data wrangling, your input data frames *must* be in "tidy" format. Thus, all non-"tidy" data must be converted to "tidy" format first. Before we convert non-"tidy" data frames like `drinks_smaller` to "tidy" data frames like `drinks_smaller_tidy`, let's define "tidy" data.
+In the context of doing data science in R, long/narrow format is also known as "tidy" format. In order to use the **ggplot2** and **dplyr** packages for data visualization and data wrangling, your input data frames must be in "tidy" format. Thus, all non-"tidy" data must be converted to "tidy" format first. Before we convert non-"tidy" data frames like `drinks_smaller` to "tidy" data frames like `drinks_smaller_tidy`, let's define "tidy" data.
 
 ### Definition of "tidy" data 
 
 
-What does it mean for your data to be "tidy"? While "tidy" has a clear English meaning of "organized," the word "tidy" in data science using R means that your data follows a standardized format. We will follow Hadley Wickham's  definition of *"tidy" data*:
+What does it mean for your data to be "tidy"? While "tidy" has a clear English meaning of "organized," the word "tidy" in data science using R means that your data follows a standardized format. We will follow Hadley Wickham's  definition of "tidy" data:
 
 
 A *dataset* is a collection of values, usually either numbers (if quantitative) or strings AKA text data (if qualitative/categorical). Values are organised in two ways. Every value belongs to a variable and an observation. A variable contains all values that measure the same underlying attribute (like height, temperature, duration) across units. An observation contains all values measured on the same unit (like a person, or a day, or a city) across attributes.
@@ -1782,11 +1756,11 @@ Here are some commands which will prove useful for the rest of the book.
 ### NA Values 
 
 
-###`ifelse()`
+### `ifelse()`
 
 ### `skim()`
 
-The `skim()`  function is a useful summary function that offers an overview of a dataframe. It offers users the abilities to see potential trends and outliers for each of the variables. The function creates a report of the dataframe according to variable type. First, load (and install) the `skimr` package in which `skim()` resides. We'll run skim on the `flights` dataset. 
+The `skim()` function from the **skimr** package is a useful summary function that offers an overview of a dataframe.  It offers users the abilities to see potential trends and outliers for each of the variables in a dataframe. The function creates a report of the dataframe according to variable type. We'll run skim on the `flights` dataset. 
 
 ```{r}
 skim(flights)
