@@ -14,7 +14,7 @@ output_yaml: _output.yml
 
 <!-- Make a tibble and then pipe tibble to ggplot -->
 
-<!-- tibble(heads = rbindom . .. .) %>%  -->
+<!-- tibble(heads = rbinom . .. .) %>%  -->
 <!--  ggplot() -->
 
 <!-- Include math formulas (sort of?) in the margin. $C ~ binomial(n, p)$, where $C \subset (H,T)$  -->
@@ -359,7 +359,7 @@ There are some basic string manipulation tasks:
 * Operate on two or more character vectors
   - Glue them together element-wise to get a new character vector.
 
-*`fruit`, `words`, and `sentences` are character vectors that ship with stringr for practicing.*
+`fruit`, `words`, and `sentences` are character vectors that ship with stringr for practicing.*
 
 ### Studying a single character vector
 
@@ -507,7 +507,7 @@ knitr::include_graphics("02-wrangling/images/regexp.jpg")
 
 ```
 
-Frequently your string tasks cannot be expressed in terms of a fixed string, but can be described in terms of a **pattern**. Regular expressions, aka "regexes", are the standard way to specify these patterns. In regexes, specific characters and constructs take on special meaning in order to match multiple strings.
+Frequently your string tasks cannot be expressed in terms of a fixed string, but can be described in terms of a pattern. Regular expressions, aka "regexes", are the standard way to specify these patterns. In regexes, specific characters and constructs take on special meaning in order to match multiple strings.
 
 The country names in the `gapminder` dataset are convenient for examples. Load it now and store the `r nlevels(gapminder::gapminder$country)` unique country names in the object `countries`.
 
@@ -612,8 +612,21 @@ list(match = intersect(matches, str_subset(fruit, pattern = "le")),
      no_match = setdiff(matches, str_subset(fruit, pattern = "le")))
 ```
 
-### String Constant 
-<!-- EWF --> 
+### Raw strings
+
+You’ve probably caught on by now that there are certain characters with special meaning in regexes, including `$ * + . ? [ ] ^ { } | ( ) \`. This makes things difficult when we want to use these characters within the strings instead of as regexes. Previously, we would have to do a lot of maneuvering to create strings containing special characters, but now we can use `r"()"`. 
+
+```{r}
+r"(Do you use "airquotes" much?)"
+```
+
+The `\` preceding each quote is what is known as escaping. It signals to the computer that the quotations are part of the string. Now, what happens if we have a backslash within the string. 
+
+```{r}
+r"(\)"
+```
+
+As you can see, a backslash is used to escape the initial backslash.  
 
 ## Factors
 
@@ -732,7 +745,7 @@ fct_reorder(gapminder$country, gapminder$lifeExp, .desc = TRUE) %>%
 ```
 
 Example of why we reorder factor levels: often makes plots much better! When a factor is mapped to x or y, it should almost always be reordered by the quantitative variable you are mapping to the other one.
-Compare the interpretability of these two plots of life expectancy in Asian countries in 2007. The *only difference* is the order of the `country` factor. Which one do you find easier to learn from?
+Compare the interpretability of these two plots of life expectancy in Asian countries in 2007. The only difference is the order of the `country` factor. Which one do you find easier to learn from?
 
 ```{r alpha-order-silly, fig.show = 'hold', out.width = '49%'}
 gap_asia_2007 <- gapminder %>% filter(year == 2007, continent == "Asia")
@@ -763,7 +776,7 @@ h_gap$country %>% levels()
 h_gap$country %>% fct_relevel("Romania", "Haiti") %>% levels()
 ```
 
-This might be useful if you are preparing a report for, say, the Romanian government. The reason for always putting Romania first has nothing to do with the *data*, it is important for external reasons and you need a way to express this.
+This might be useful if you are preparing a report for, say, the Romanian government. The reason for always putting Romania first has nothing to do with the data, it is important for external reasons and you need a way to express this.
 
 ### Recode the levels
 
@@ -904,13 +917,13 @@ knitr::include_graphics("02-wrangling/images/lists-subsetting.png")
 
 The difference between `[` and `[[` is very important, but it's easy to get confused. To help you remember, let me show you an unusual pepper shaker.
 
-```{r, echo = FALSE, fig.margin=TRUE} 
+```{r, echo = FALSE, out.width = "25%"} 
 knitr::include_graphics("02-wrangling/images/pepper.jpg")
 ```
 
 If this pepper shaker is your list `x`, then, `x[1]` is a pepper shaker containing a single pepper packet:
 
-```{r, echo = FALSE, fig.margin=TRUE}
+```{r, echo = FALSE, out.width = "25%"}
 knitr::include_graphics("02-wrangling/images/pepper-1.jpg")
 ```
 
@@ -918,13 +931,13 @@ knitr::include_graphics("02-wrangling/images/pepper-1.jpg")
 
 `x[[1]]` is:
 
-```{r out.width = "25%", fig.margin=TRUE} 
+```{r echo = FALSE, out.width = "25%"} 
 knitr::include_graphics("02-wrangling/images/pepper-2.jpg")
 ```
 
 If you wanted to get the content of the pepper package, you'd need `x[[1]][[1]]`:
 
-```{r, echo = FALSE, fig.margin=TRUE}
+```{r, echo = FALSE, out.width = "25%"}
 knitr::include_graphics("02-wrangling/images/pepper-3.jpg")
 ```
 
@@ -1220,6 +1233,10 @@ We see that `dplyr::bind_rows()` does the row bind and puts `NA` in for the miss
 
 ### Column binding
 
+```{r, echo = FALSE, fig.cap = "Attempting to bind columns correctly", fig.margin = TRUE}
+knitr::include_graphics("02-wrangling/images/wrangling.gif")
+```
+
 Column binding is much more dangerous because it often "works" when it should not. It's your job to make sure the rows are aligned and it's all too easy to screw this up.
 
 The data in `gapminder` was originally excavated from 3 messy Excel spreadsheets: one each for life expectancy, population, and GDP per capital. Let's relive some of the data wrangling joy and show a column bind gone wrong.
@@ -1374,7 +1391,7 @@ pub_gt <- style_table(publishers, "publishers") %>%
 
 `inner_join(x, y)`: Return all rows from `x` where there are matching values in `y`, and all columns from `x` and `y`. If there are multiple matches between `x` and `y`, all combination of the matches are returned. This is a mutating join.
 
-```{r, echo=FALSE, fig.cap="Inner join."}
+```{r, echo= FALSE, fig.cap="Inner join."}
 knitr::include_graphics("02-wrangling/images/join-inner.png")
 ```
 
@@ -1902,13 +1919,7 @@ ggplot(data = tibble(x = c(-4, 4)), aes(x)) +
 
 ### `rnorm()`
 
-The function `rnorm()` can be read as "r-norm". It corresponds to a Normal distribution, whose histograms look roughly like the following:
-
-<!-- EC: Clean up graphic (or even just insert as picture?) DK: Maybe just use the graphic above? We certainly don't want to "insert" pictures. We generate what we want to show. -->
-
-```{r echo=FALSE}
-rnorm(1000) %>% hist()
-```
+The function `rnorm()` can be read as "r-norm". It corresponds to a Normal distribution.
 
 `rnorm()` has three arguments: `n`, `mean`, and `sd`. `n` corresponds to the number of observations, `mean` corresponds to the average as a whole, and `sd` corresponds to the size of the standard deviation from the mean. We will go further in depth in future chapters on what the statistical mechanics are behind these distributions, but for now, let's focus on creating a Normal distribution.
 
@@ -1930,8 +1941,6 @@ distrib <- data.frame(value=rnorm(10))
 
 ggplot(distrib, aes(x=value)) + 
   geom_histogram(bins = 10)
-
-# rnorm(10) %>% hist()
 ```
 As you can see, it's not as symmetrical as the one displayed before. Now what if we try taking 100 observations, then 1000?
 
@@ -1940,8 +1949,6 @@ distrib_2 <- data.frame(value = rnorm(100))
 
 ggplot(distrib_2, aes(x = value)) +
   geom_histogram(bins = 10)
-
-# rnorm(100) %>% hist()
 ```
 
 ```{r}
@@ -1949,8 +1956,6 @@ distrib_3 <- data.frame(value = rnorm(1000))
 
 ggplot(distrib_2, aes(x = value)) +
   geom_histogram(bins = 10)
-
-# rnorm(1000) %>% hist()
 ```
 
 Now it's looking a lot more similar! As you just discovered, the more observations a normal distribution has, the closer it looks to a symmetrical bell curve.
