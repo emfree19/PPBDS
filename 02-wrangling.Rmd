@@ -1772,8 +1772,7 @@ Here are some commands which will prove useful for the rest of the book.
 
 ### NA Values 
 
-
-### `ifelse()`
+When importing datasets that have not already been extensively wrangled, 
 
 ### `skim()`
 
@@ -1785,8 +1784,6 @@ skim(flights)
 
 
 Take a quick look at the section containing numeric variables. This is of particular interest because the rightmost column offers insight into the potential distribution of the data, something that will be discussed in later depth below. 
-
-<!-- DK: Maybe we put this down below, after we introduce rnorm()? -->
 
 ## Distribution 
 
