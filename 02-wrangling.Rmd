@@ -1772,7 +1772,28 @@ Here are some commands which will prove useful for the rest of the book.
 
 ### NA Values 
 
-When importing datasets that have not already been extensively wrangled, 
+When importing datasets that have not already been extensively wrangled, there may be some observations in the dataframe that are blank. These are called missing values, and they are often marked as `NA`. The presence of `NA` values in a dataframe can be problematic. Recall from the previous chapter that without setting `na.rm = TRUE`, the following code gives a very different results. 
+
+```{r}
+flights %>% 
+  mutate(gain = arr_delay - dep_delay) %>% 
+  summarize(mean = mean(gain))
+
+flights %>% 
+  mutate(gain = arr_delay - dep_delay) %>% 
+  summarize(mean = mean(gain, na.rm = TRUE))
+```
+
+Suppose we wanted to simply remove all missing values from the `gain` column. We can filter and remove missing values using the helper function `is.na()`. `is.na()` is a boolean function that takes in an observation in a dataframe and returns TRUE if the observation is a missing value and FALSE otherwise. In this case, we will have to use `!is.na()`, as the `!` means "not". Thus, we can filter observations that are NOT missing values.
+
+```{r}
+flights %>%
+  mutate(gain = arr_delay - dep_delay) %>%
+  filter(!is.na(gain)) %>%
+  summarize(mean = mean(gain))
+```
+
+<!-- EWF: replace_na() --> 
 
 ### `skim()`
 
