@@ -80,12 +80,13 @@ library(tidyverse)
 library(PPBDS.data)
 library(lubridate)
 library(skimr)
+library(janitor)
 library(gapminder)
 library(nycflights13)
 library(fivethirtyeight)
 ```
 
-The **tidyverse** package will be used in every chapter. **PPBDS.data** is the data package created specifically for this course. **lubridate** is a package for working with dates and times. **skimr** contains functions that are useful for providing summary statistics. **nycflights** includes data associated with flights out of New York City's three major airports. **gapminder** has data for countries across decades. **fivethirtyeight** cleans up data from the [FiveThirtyEight](https://fivethirtyeight.com/) team.  **PPBDS.data** includes, as you might guess, data organized for use with this textbook.
+The **tidyverse** package will be used in every chapter. **PPBDS.data** is the data package created specifically for this course. **lubridate** is a package for working with dates and times. **janitor** offers functions for cleaning up dirty data. **skimr** contains functions that are useful for providing summary statistics. **nycflights** includes data associated with flights out of New York City's three major airports. **gapminder** has data for countries across decades. **fivethirtyeight** cleans up data from the [FiveThirtyEight](https://fivethirtyeight.com/) team.  **PPBDS.data** includes, as you might guess, data organized for use with this textbook.
 
 ## Data Gathering
 
@@ -1784,7 +1785,7 @@ flights %>%
   summarize(mean = mean(gain, na.rm = TRUE))
 ```
 
-Suppose we wanted to simply remove all missing values from the `gain` column. We can filter and remove missing values using the helper function `is.na()`. `is.na()` is a boolean function that takes in an observation in a dataframe and returns TRUE if the observation is a missing value and FALSE otherwise. In this case, we will have to use `!is.na()`, as the `!` means "not". Thus, we can filter observations that are NOT missing values.
+Suppose we wanted to simply remove all missing values from the `gain` column. We can filter and remove missing values using the helper function `is.na()`. `is.na()` is a boolean function that takes in an observation in a dataframe and returns TRUE if the observation is a missing value and FALSE otherwise. In this case, we will have to use `!is.na()`, as the `!` operator means "not". Thus, we can filter observations that are NOT missing values.
 
 ```{r}
 flights %>%
@@ -1793,7 +1794,60 @@ flights %>%
   summarize(mean = mean(gain))
 ```
 
-<!-- EWF: replace_na() --> 
+We can also remove the missing values from the dataset instead of merely filtering them out using the `drop_na()` function. The `flights` dataset contains 336,776 rows. And when 
+
+```{r}
+flights %>%
+  mutate(gain = arr_delay - dep_delay) %>%
+  filter(is.na(gain))
+```
+As we see here, there are 9,430 rows of the `flights` dataset that contain missing values in the gain column. So using `drop_na()`, we get:
+
+```{r}
+flights %>%
+  mutate(gain = arr_delay - dep_delay) %>%
+  drop_na(gain)
+```
+
+Note that 336,776 - 9,430 = 327346, so `drop_na()` seems to check out. Be careful with `drop_na()`, however, because you may be removing rows with valuable data in other columns. 
+
+Suppose you did not want to remove the missing values but instead replace them with a number. We can use `replace_na()` as a helper function to `mutate()`. Here we replace each missing value in the gain column with a value of 0. 
+
+```{r}
+flights %>%
+  mutate(gain = arr_delay - dep_delay) %>%
+  mutate(gain = replace_na(data = gain, replace = 0))
+```
+
+You must be careful with this, though. Replacing missing values will affect any statistical result, such as the mean or standard deviation. Below we computer the mean: 
+
+```{r}
+flights %>%
+  mutate(gain = arr_delay - dep_delay) %>%
+  mutate(gain = replace_na(data = gain, replace = 0)) %>%
+  summarize(mean = mean(gain))
+```
+
+Comparing it with the previous mean variable we see that the computed value is different. 
+
+There are many additional ways to manipulate missing values, but these three functions cover most of the ways you will need to work with such observations in your data.   
+
+### `clean_names()`
+
+Another useful function is the `clean_names()` function, which is included in the **janitor** package. This function allows you to standardize the column names of a dataset. This can be particularly useful when reading in a dataset from the web. Look at the `flights` dataset, again. 
+```{r}
+glimpse(flights)
+```
+
+As you can see the column names are in all lowercase, and each space in between words is represented by an underscore character. This is the default result of `clean_names()`, so running `clean_names(flights)` will have no effect. 
+
+Suppose, instead, we wanted to change the column names to camel case, where word boundaries are demarcated by an upper case letter.  
+
+```{r}
+flights %>% clean_names("small_camel")
+```
+
+Nonetheless, you will likely only ever be required to use `clean_names()` with the default snake case. 
 
 ### `skim()`
 
